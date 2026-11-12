@@ -384,9 +384,6 @@ hl.animation({ leaf = "zoomFactor", enabled = true, speed = 1.3, bezier = "respu
 --
 -- It is not done here because the names belong to one particular machine and
 -- this file is shared by the laptop and the tower.
-for i = 1, 3 do
-    hl.workspace_rule({ workspace = tostring(i), persistent = true })
-end
 
 
 ---- LAYOUTS ----
@@ -554,148 +551,66 @@ hl.config({
     binds = { workspace_back_and_forth = true },
 })
 
-local mainMod = "SUPER"
+local mainMod     = "SUPER"
+local terminal    = "kitty"
+local fileManager = "thunar"          -- o antigo usava "dolphin"; troca aqui se preferir
+local menu        = "hyprlauncher"
+local nav         = "google-chrome-stable"
+local wallpaperBnd = "/tmp/qs-wallpaper-toggle"
 
--- Screenshots
--- Region: freezes the screen before you choose the crop, so it also captures
--- whatever closes when it loses focus (the Super+D notch, a menu, a
--- dropdown). See ~/.config/hypr/scripts/capture-region.sh.
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot-region.sh"))
--- Instant FULL screenshot (grim does not steal focus -> it does capture menus like rofi).
--- Super+Shift+P is the RELIABLE key; Print works if your keyboard emits that keysym.
-hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot-full.sh"))
-hl.bind("Print",                   hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot-full.sh"))
+-- Apps
+hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd(terminal))
+hl.bind("CTRL + ALT + T", hl.dsp.exec_cmd(terminal))
+hl.bind("CTRL + ALT + E", hl.dsp.exec_cmd(nav))
+hl.bind(mainMod .. " + W", hl.dsp.global("quickshell:wallpaper"))  -- wallpaper picker
+hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
+hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
+hl.bind("Print", hl.dsp.exec_cmd("grimblast copy area"))
+hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("grimblast copy area"))
 
-hl.bind(mainMod .. " + L",         hl.dsp.exec_cmd("loginctl lock-session"))
--- Clipboard history. It no longer calls cliphist's rofi: it opens the notch
--- launcher directly in its "#" mode. The data still comes from cliphist
--- (wl-paste --watch stores it, up there in exec-once); all that changes is who
--- paints it and who searches it.
-hl.bind(mainMod .. " + SHIFT + V", hl.dsp.global("quickshell:clipboard"))
+-- Window management
+hl.bind("ALT + F4", hl.dsp.window.close())
+hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mainMod .. " + M", hl.dsp.exec_cmd(
+    "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"
+))
+hl.bind("SUPER + P", hl.dsp.window.move({ monitor = "Virtual-1" }))
 
--- Basics
-hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("uwsm app -- " .. terminal))
-hl.bind(mainMod .. " + C", hl.dsp.window.close())
-hl.bind(mainMod .. " + M", hl.dsp.exit())
-hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("uwsm app -- " .. fileManager))
+-- Focus
+hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
+hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
+hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
+hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
 
-
--- Local AI: a panel that knows this system. Special workspace so that the
--- session and the model stay alive between presses.
---
--- ~/ia-local is a self-contained module: EVERYTHING of its own lives in there,
--- this panel included. The bind is registered ONLY if the module exists, so
--- deleting the directory does not leave a dead Super+I that looks like it works.
--- The module keeps its own record of what it touches outside its directory.
-local ia_panel = os.getenv("HOME") .. "/ia-local/bin/ia-panel"
-local ia_f = io.open(ia_panel, "r")
-if ia_f then
-    ia_f:close()
-    hl.bind(mainMod .. " + I", hl.dsp.exec_cmd(ia_panel))
-end
--- First press: floating at 60 % and centred. Second: back to tiling.
-hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("~/.config/hypr/scripts/toggle-float-centered.sh"))
-hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
-hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
-hl.bind(mainMod .. " + G", hl.dsp.exec_cmd("~/.config/quickshell/reload.sh"))
-hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("kitty --class pokemon-popup -e ~/.config/hypr/scripts/pokemon-popup.sh"))
-
--- Quickshell (bar + notch). 'global' reaches the shell over IPC.
-hl.bind(mainMod .. " + R",         hl.dsp.global("quickshell:launcher"))   -- launcher from the notch
-hl.bind(mainMod .. " + SHIFT + M", hl.dsp.global("quickshell:media"))      -- floating player
-hl.bind(mainMod .. " + N",         hl.dsp.global("quickshell:notchstyle")) -- toggles notch <-> island
-hl.bind(mainMod .. " + SHIFT + W", hl.dsp.global("quickshell:wallpaper"))  -- wallpaper picker
-hl.bind(mainMod .. " + TAB",       hl.dsp.global("quickshell:overview"))   -- window overview
-hl.bind(mainMod .. " + SHIFT + TAB", hl.dsp.global("quickshell:stage"))    -- Stage Manager sidebar
-hl.bind(mainMod .. " + D",         hl.dsp.global("quickshell:notch"))      -- control centre
-hl.bind(mainMod .. " + SHIFT + D", hl.dsp.global("quickshell:system"))     -- system status
-hl.bind(mainMod .. " + SHIFT + E", hl.dsp.global("quickshell:power"))      -- power menu
--- Under the same key as the popup pokémon (Super+O), so all the pokémon
--- things stay together: O brings one onto the screen, SHIFT+O opens the team.
-hl.bind(mainMod .. " + SHIFT + O", hl.dsp.global("quickshell:poke"))       -- pokémon team
-hl.bind(mainMod .. " + comma",     hl.dsp.global("quickshell:settings"))   -- Settings (like Cmd+, on macOS)
-hl.bind(mainMod .. " + A",         hl.dsp.global("quickshell:settings"))   -- alias of Super+,
--- Super+K used to open ~/.config/hypr/list_keybinds.sh: a rofi that parsed
--- THIS very file (well, its .conf mirror) to show the list of shortcuts. But
--- Settings > Shortcuts already did exactly that parsing, so they were two lists
--- that only matched as long as nobody touched either. The key is the same as
--- ever; what it opens now is the list that already lived in the notch.
-hl.bind(mainMod .. " + K",         hl.dsp.global("quickshell:keybinds"))   -- shortcut map (Settings > Shortcuts)
-
-hl.bind(mainMod .. " + W",         hl.dsp.global("quickshell:bar"))        -- hide/show the bar
-
--- Move the FOCUS with Super + Shift + arrows
-hl.bind(mainMod .. " + SHIFT + left",  hl.dsp.focus({ direction = "l" }))
-hl.bind(mainMod .. " + SHIFT + right", hl.dsp.focus({ direction = "r" }))
-hl.bind(mainMod .. " + SHIFT + up",    hl.dsp.focus({ direction = "u" }))
-hl.bind(mainMod .. " + SHIFT + down",  hl.dsp.focus({ direction = "d" }))
-
--- Move/swap the WINDOW with Super + arrows. This is what triggers
--- 'windowsMove', i.e. the spring above.
-hl.bind(mainMod .. " + left",  hl.dsp.window.move({ direction = "l" }))
-hl.bind(mainMod .. " + right", hl.dsp.window.move({ direction = "r" }))
-hl.bind(mainMod .. " + up",    hl.dsp.window.move({ direction = "u" }))
-hl.bind(mainMod .. " + down",  hl.dsp.window.move({ direction = "d" }))
-
--- Workspaces with Super + [0-9], and send the window there with Super+Shift.
-for i = 1, 10 do
-    local key = i % 10  -- 10 goes on the 0 key
-    hl.bind(mainMod .. " + " .. key,             hl.dsp.focus({ workspace = i }))
-    hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
+-- Workspaces
+hl.bind("ALT + Tab",         hl.dsp.focus({ workspace = "e+1" }))
+hl.bind("ALT + SHIFT + Tab", hl.dsp.focus({ workspace = "e-1" }))
+for i = 1, 5 do
+    hl.bind(mainMod .. " + " .. i,         hl.dsp.focus({ workspace = i }))
+    hl.bind(mainMod .. " + SHIFT + " .. i, hl.dsp.window.move({ workspace = i }))
 end
 
--- Mouse wheel to switch workspace
-hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
-hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
+hl.bind("ALT + W", hl.dsp.exec_cmd("wtype ?"))
 
--- Move/resize by dragging with Super + button
+
+hl.bind("SUPER + Super_L", hl.dsp.global("quickshell:launcher"), { release = true })
+hl.bind("SUPER + SHIFT + O", hl.dsp.global("quickshell:poke"))
+
+
+-- Mantidos do novo (o antigo não tinha): mouse, volume, brilho, mídia, power
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
--- Volume/brightness: the notch (Quickshell) paints the OSD. It picks up the
--- volume by itself via Pipewire; the brightness is changed by the notch itself
--- over IPC so there is no lag and no value mismatch.
 hl.bind("XF86AudioRaiseVolume",  hl.dsp.exec_cmd("wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 2%+"), { locked = true, repeating = true })
 hl.bind("XF86AudioLowerVolume",  hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%-"),        { locked = true, repeating = true })
 hl.bind("XF86AudioMute",         hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),       { locked = true })
 hl.bind("XF86AudioMicMute",      hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),     { locked = true })
 hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd("qs ipc call notch bright up"),                      { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("qs ipc call notch bright down"),                    { locked = true, repeating = true })
-
--- Requires playerctl
 hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true })
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
-
--- Physical power button
-hl.bind("XF86PowerOff", hl.dsp.global("quickshell:power"))
-
--- Quick wins
-hl.bind(mainMod .. " + CTRL + S",  hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot-annotate.sh")) -- annotate screenshot (satty)
-hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd("~/.config/hypr/scripts/colorpicker.sh"))         -- colour picker (hyprpicker)
-hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("~/.config/hypr/scripts/hyprsunset-toggle.sh"))   -- night light
-
--- Signature: menu / ocr
--- The command menu is no longer a rofi either: it is the launcher's ">" mode.
--- Same key, same list (plus what that menu could not offer because it lived
--- outside the shell: settings, workspace map, do not disturb, caffeine).
---
--- There was a third bind here, Super+Ctrl+W, which installed a website as an "app".
--- Retired on 19 Aug 2026: it was the LAST thing still launching rofi, and neither
--- ~/.local/share/webapps nor a single web-app .desktop ever came to exist in
--- all that time.
-hl.bind(mainMod .. " + ALT + Space", hl.dsp.global("quickshell:actions"))                       -- command menu
-hl.bind(mainMod .. " + CTRL + T",    hl.dsp.exec_cmd("~/.config/hypr/scripts/ocr.sh"))          -- screen OCR
-
--- Screen recording (wf-recorder)
-hl.bind(mainMod .. " + CTRL + R", hl.dsp.exec_cmd("~/.config/hypr/scripts/screenrecord.sh"))
--- The same recording, but with whatever plays through the speakers. It is on
--- a separate key, and not an option of the one above, on purpose: a quick
--- recording should not take your music along without you asking for it.
-hl.bind(mainMod .. " + CTRL + SHIFT + R", hl.dsp.exec_cmd("~/.config/hypr/scripts/screenrecord.sh --sonido"))
-
-
 --------------------------------
 ---- WINDOWS AND LAYERS ----
 --------------------------------
@@ -868,3 +783,10 @@ hl.layer_rule({
 --  be missing afterwards.
 -- ==========================================================================
 pcall(dofile, os.getenv("HOME") .. "/.config/hypr/efectos.lua")
+
+-- Pokémon (pocket-dots)
+hl.bind(mainMod .. " + O",         hl.dsp.exec_cmd("kitty --class pokemon-popup -e ~/.config/hypr/scripts/pokemon-popup.sh")) -- Pokédex flutuante
+hl.bind(mainMod .. " + SHIFT + O", hl.dsp.global("quickshell:poke"))   -- time de pokémon no notch
+
+-- Control centre (era o Super+C do tide)
+hl.bind(mainMod .. " + D",         hl.dsp.global("quickshell:notch"))
