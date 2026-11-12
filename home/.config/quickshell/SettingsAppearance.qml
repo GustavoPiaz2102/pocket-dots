@@ -233,7 +233,7 @@ Flickable {
             title: I18n.tr("Barra")
 
             SettingsControls.Row_ {
-                label: I18n.tr("Ocultar automáticamente")
+                label: I18n.tr("Smart Hide")
                 hint: I18n.tr("Oculta la barra y el notch cuando no los usas y superpone la barra sobre la ventana actual sin redimensionarla.")
                 SettingsControls.Switch_ {
                     checked: Config.autoHide

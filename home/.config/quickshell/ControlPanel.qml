@@ -525,8 +525,11 @@ Item {
             Rectangle {
                 id: powerSubmenu
                 Layout.fillWidth: true
-                Layout.preferredHeight: powerToggleBtn.menuOpen ? 36 : 0
-                visible: height > 0
+                property real targetH: powerToggleBtn.menuOpen ? 36 : 0
+                implicitHeight: targetH
+                Layout.preferredHeight: targetH
+                Layout.maximumHeight: targetH
+                visible: powerToggleBtn.menuOpen || targetH > 0.5
                 opacity: powerToggleBtn.menuOpen ? 1 : 0
                 clip: true
                 radius: 10
@@ -534,7 +537,7 @@ Item {
                 border.width: 1
                 border.color: Colors.hairline
 
-                Behavior on Layout.preferredHeight { NumberAnimation { duration: Appearance.mQuick; easing.type: Easing.OutCubic } }
+                Behavior on targetH { NumberAnimation { duration: Appearance.mQuick; easing.type: Easing.OutCubic } }
                 Behavior on opacity { NumberAnimation { duration: Appearance.mQuick; easing.type: Easing.OutQuad } }
 
                 RowLayout {
