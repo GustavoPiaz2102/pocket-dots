@@ -265,7 +265,35 @@ Scope {
             // Stepping aside for fullscreen belongs to the screen that has it, not
             // to all of them: a fullscreen video here must not wipe out the bar on
             // the other screen.
-            property real fsProg: (ShellState.fullscreen && win.primary) ? 1 : 0
+            readonly property bool restingFace: ShellState.mode === "idle" || ShellState.mode === "media"
+            readonly property bool barHovered: edgeHover.hovered || leftHover.hovered || rightHover.hovered || notchHover.hovered || bubbleMa.containsMouse
+            readonly property bool wantShown: !Config.autoHide
+                || win.barHovered
+                || ShellState.open || !win.restingFace
+            property bool shownHold: true
+            onWantShownChanged: {
+                if (wantShown) { hideTimer.stop(); shownHold = true; }
+                else hideTimer.restart();
+            }
+            Component.onCompleted: {
+                if (!wantShown) hideTimer.restart();
+            }
+            Connections {
+                target: Config
+                function onAutoHideChanged() {
+                    if (Config.autoHide && !win.wantShown) hideTimer.restart();
+                    else if (!Config.autoHide) { hideTimer.stop(); win.shownHold = true; }
+                }
+            }
+            Timer {
+                id: hideTimer
+                interval: Math.max(100, Config.autoHideDelay)
+                onTriggered: win.shownHold = false
+            }
+            readonly property bool autoHidden: Config.autoHide
+                && !win.wantShown && !win.shownHold
+
+            property real fsProg: ((ShellState.fullscreen && win.primary) || win.autoHidden) ? 1 : 0
             Behavior on fsProg { NumberAnimation { duration: Appearance.mIn; easing.type: Easing.OutCubic } }
             readonly property bool fsHidden: ShellState.fullscreen && win.primary
             visible: root.shown
@@ -278,7 +306,7 @@ Scope {
             // leaving, and each of those two changes rearranges EVERY tiled
             // window. The `mask` further down still looks at fsHidden, which is
             // needed there: it is what stops the bar eating the clicks.
-            exclusiveZone: Config.reserveSpace ? root.barH : 0
+            exclusiveZone: (Config.reserveSpace && !Config.autoHide) ? root.barH : 0
             color: "transparent"
             // Top, not Overlay: rofi, wlogout and hyprlock must come out on top.
             WlrLayershell.layer: WlrLayer.Top
@@ -317,6 +345,12 @@ Scope {
                     width: ShellState.bubbleOn ? Math.ceil(bubble.width) : 0
                     height: ShellState.bubbleOn ? Math.ceil(bubble.height) : 0
                 }
+                Region {
+                    intersection: Intersection.Combine
+                    x: 0; y: 0
+                    width: Config.autoHide ? Math.ceil(win.width) : 0
+                    height: Config.autoHide ? 2 : 0
+                }
             }
 
             // "Click outside = close".
@@ -331,6 +365,13 @@ Scope {
             }
 
             IdleInhibitor { window: win; enabled: ShellState.caffeine && win.primary }
+
+            Item {
+                id: edgeSensor
+                anchors { top: parent.top; left: parent.left; right: parent.right }
+                height: 2
+                HoverHandler { id: edgeHover }
+            }
 
             Item {
                 id: surface
@@ -353,6 +394,7 @@ Scope {
                 // ══════════════ barra: izquierda ══════════════
                 RowLayout {
                     id: leftGroup
+                    HoverHandler { id: leftHover }
                     anchors { left: parent.left; leftMargin: root.sideMargin; top: parent.top }
                     height: root.barH
                     spacing: 2
@@ -706,6 +748,7 @@ Scope {
                 // disappear; the controls live in the notch panel.
                 RowLayout {
                     id: rightGroup
+                    HoverHandler { id: rightHover }
                     anchors { right: parent.right; rightMargin: root.sideMargin; top: parent.top }
                     height: root.barH
                     spacing: 1
@@ -1015,6 +1058,7 @@ Scope {
                 // ══════════════ el notch ══════════════
                 Item {
                     id: notch
+                    HoverHandler { id: notchHover }
                     readonly property real gap: root.topGap
                     // Safety net: if a panel does not handle Escape, the key bubbles
                     // up to here and it closes anyway. No panel can leave you

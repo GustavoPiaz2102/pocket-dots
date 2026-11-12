@@ -593,7 +593,7 @@ end
 hl.bind("ALT + W", hl.dsp.exec_cmd("wtype ?"))
 
 
-hl.bind("SUPER + Super_L", hl.dsp.global("quickshell:launcher"), { release = true })
+hl.bind("SUPER + Super_L", hl.dsp.exec_cmd("qs ipc call notch launcher"), { release = true })
 hl.bind("SUPER + SHIFT + O", hl.dsp.global("quickshell:poke"))
 
 

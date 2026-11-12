@@ -233,6 +233,39 @@ Flickable {
             title: I18n.tr("Barra")
 
             SettingsControls.Row_ {
+                label: I18n.tr("Ocultar automáticamente")
+                hint: I18n.tr("Oculta la barra y el notch cuando no los usas y superpone la barra sobre la ventana actual sin redimensionarla.")
+                SettingsControls.Switch_ {
+                    checked: Config.autoHide
+                    onToggled: function (v) {
+                        Config.autoHide = v;
+                        if (v) Config.reserveSpace = false;
+                        Config.save();
+                    }
+                }
+            }
+
+            SettingsControls.Row_ {
+                shown: Config.autoHide
+                label: I18n.tr("Tiempo para ocultar")
+                hint: I18n.tr("Tiempo en milisegundos antes de que la barra se oculte al retirar el cursor (100–5000 ms).")
+                RowLayout {
+                    spacing: 8
+                    SettingsControls.Slider_ {
+                        Layout.preferredWidth: 176
+                        value: Config.autoHideDelay
+                        from: 100; to: 5000; stepSize: 50; suffix: " ms"
+                        onMoved: function (v) { Config.autoHideDelay = Math.round(v); Config.save(); }
+                    }
+                    SettingsControls.NumberInput_ {
+                        value: Config.autoHideDelay
+                        from: 100; to: 5000; suffix: " ms"
+                        onModified: function (v) { Config.autoHideDelay = v; Config.save(); }
+                    }
+                }
+            }
+
+            SettingsControls.Row_ {
                 label: I18n.tr("Velo de fondo")
                 hint: I18n.tr("A 0 la barra es del todo transparente. Súbelo si con fondos claros no lees los glifos.")
                 SettingsControls.Slider_ {

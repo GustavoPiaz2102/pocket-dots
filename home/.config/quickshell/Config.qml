@@ -55,6 +55,8 @@ Singleton {
     property alias reserveSpace: opts.reserveSpace
 
     // ───────── bar ─────────
+    property alias autoHide: opts.autoHide
+    property alias autoHideDelay: opts.autoHideDelay
     property alias scrimAlpha: opts.scrimAlpha  // veil under the bar (0 = transparent)
     property alias sideMargin: opts.sideMargin
     property alias showArch: opts.showArch
@@ -236,7 +238,8 @@ Singleton {
         opts.notchColor = "#000000";
         opts.bandH = 32; opts.flare = 13; opts.roundMax = 30; opts.idleW = 140;
         opts.hoverDelay = 240; opts.hoverPreview = true; opts.browserMedia = false;
-        opts.showDate = false; opts.showBattery = false; opts.reserveSpace = true;
+        opts.showDate = false; opts.showBattery = false; opts.reserveSpace = false;
+        opts.autoHide = false; opts.autoHideDelay = 450;
         opts.scrimAlpha = 0.0; opts.sideMargin = 16;
         opts.showArch = true; opts.showWorkspaces = true;
         opts.showAppName = true; opts.showTray = true;
@@ -285,8 +288,10 @@ Singleton {
             property bool browserMedia: false
             property bool showDate: false   // at rest only time and battery; the full date appears on hover
             property bool showBattery: false
-            property bool reserveSpace: true
+            property bool reserveSpace: false
 
+            property bool autoHide: false
+            property int autoHideDelay: 450
             property real scrimAlpha: 0.0
             property int sideMargin: 16
             property bool showArch: true

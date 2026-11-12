@@ -5,11 +5,11 @@
 
 var limits = {
     islandGap: [0, 14], bandH: [24, 48], flare: [0, 22], roundMax: [8, 40],
-    idleW: [110, 380], hoverDelay: [0, 900], scrimAlpha: [0, 0.7],
+    idleW: [110, 380], hoverDelay: [0, 900], autoHideDelay: [100, 5000], scrimAlpha: [0, 0.7],
     sideMargin: [4, 48], clockSize: [12, 28], motionBlurSamples: [1, 32],
     windowRounding: [0, 20]
 };
-var switches = ["hoverPreview", "showDate", "showBattery", "reserveSpace", "showArch",
+var switches = ["hoverPreview", "showDate", "showBattery", "reserveSpace", "autoHide", "showArch",
     "showWorkspaces", "showAppName", "showTray", "motionBlur"];
 var keys = Object.keys(limits).concat(switches, ["notchStyle", "notchColor", "fontUI"]);
 
@@ -23,10 +23,10 @@ function snapshot(config) {
 // so that a profile missing something can be FILLED IN, not just rejected.
 var pristine = {
     islandGap: 4, bandH: 32, flare: 13, roundMax: 30, idleW: 140,
-    hoverDelay: 240, scrimAlpha: 0.0, sideMargin: 16, clockSize: 17,
+    hoverDelay: 240, autoHideDelay: 450, scrimAlpha: 0.0, sideMargin: 16, clockSize: 17,
     motionBlurSamples: 7, windowRounding: 0,
-    hoverPreview: true, showDate: false, showBattery: false, reserveSpace: true,
-    showArch: true, showWorkspaces: true, showAppName: true, showTray: true,
+    hoverPreview: true, showDate: false, showBattery: false, reserveSpace: false,
+    autoHide: false, showArch: true, showWorkspaces: true, showAppName: true, showTray: true,
     motionBlur: true,
     notchStyle: "notch", notchColor: "#000000", fontUI: "Adwaita Sans"
 };

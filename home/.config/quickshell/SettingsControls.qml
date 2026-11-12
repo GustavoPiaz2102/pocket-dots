@@ -495,4 +495,60 @@ QtObject {
             }
         }
     }
+
+    // ─────────── numeric value input field ───────────
+    component NumberInput_: RowLayout {
+        id: ni
+        property int value: 450
+        property int from: 100
+        property int to: 5000
+        property string suffix: " ms"
+        signal modified(int v)
+
+        spacing: 6
+
+        Rectangle {
+            implicitWidth: 84
+            implicitHeight: 28
+            radius: 9
+            color: Colors.fill3
+            border.width: inputField.activeFocus ? 1 : 0
+            border.color: Colors.accent
+
+            TextInput {
+                id: inputField
+                anchors.fill: parent
+                anchors.leftMargin: 8
+                anchors.rightMargin: 8
+                verticalAlignment: TextInput.AlignVCenter
+                horizontalAlignment: TextInput.AlignRight
+                color: Colors.label
+                selectionColor: Colors.accent
+                selectedTextColor: "#ffffff"
+                font.family: Appearance.fontUI
+                font.pixelSize: Appearance.fsXS
+                validator: IntValidator { bottom: ni.from; top: ni.to }
+                text: activeFocus ? String(ni.value) : (String(ni.value) + ni.suffix)
+
+                function commit() {
+                    const parsed = parseInt(text, 10);
+                    if (!isNaN(parsed)) {
+                        const clamped = Math.max(ni.from, Math.min(ni.to, parsed));
+                        ni.modified(clamped);
+                    }
+                    text = Qt.binding(function() { return inputField.activeFocus ? String(ni.value) : (String(ni.value) + ni.suffix); });
+                }
+
+                onAccepted: { commit(); focus = false; }
+                onActiveFocusChanged: {
+                    if (activeFocus) {
+                        text = String(ni.value);
+                        selectAll();
+                    } else {
+                        commit();
+                    }
+                }
+            }
+        }
+    }
 }
