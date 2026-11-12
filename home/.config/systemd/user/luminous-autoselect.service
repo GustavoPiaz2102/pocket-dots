@@ -8,7 +8,7 @@ Before=xdg-desktop-portal-luminous.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /home/diego/.local/bin/luminous-autoselect
+ExecStart=/usr/bin/python3 /home/gustavo/.local/bin/luminous-autoselect
 Restart=on-failure
 RestartSec=2
 

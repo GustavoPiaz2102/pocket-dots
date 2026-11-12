@@ -76,7 +76,7 @@ Item {
     // against FacesDir (/usr/share/sddm/faces/<user>.face.icon, with
     // EnableAvatars in /etc/sddm.conf). No path is built by hand here. It is the
     // same file hyprlock reads, and it is there and not in $HOME because the
-    // greeter runs as its own user and cannot get into /home/diego, which is
+    // greeter runs as its own user and cannot get into /home/gustavo, which is
     // 0700.
     //
     // The whole model is walked before knowing who was the last to log in, so

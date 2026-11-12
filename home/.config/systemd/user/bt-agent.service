@@ -11,7 +11,7 @@
 # there, the agent keeps pairing (blind, with no face in the notch) instead of
 # not pairing at all.
 Description=Bluetooth pairing agent (notch)
-Documentation=file:///home/diego/.config/quickshell/scripts/bt-agent.py
+Documentation=file:///home/gustavo/.config/quickshell/scripts/bt-agent.py
 PartOf=graphical-session.target
 After=graphical-session.target
 ConditionEnvironment=WAYLAND_DISPLAY

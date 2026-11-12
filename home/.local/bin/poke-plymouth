@@ -71,8 +71,8 @@ STAGING = Path.home() / ".local" / "share" / "poke-plymouth"
 
 # diego's gifs. Since the service runs as root (and there ~ is /root) the path
 # has to be something you can give it by hand.
-GIFS_FALLBACK = Path("/home/diego/.cache/pokeanim")
-NOMBRES_FALLBACK = Path("/home/diego/.cache/pokepalette/nombres.tsv")
+GIFS_FALLBACK = Path("/home/gustavo/.cache/pokeanim")
+NOMBRES_FALLBACK = Path("/home/gustavo/.cache/pokepalette/nombres.tsv")
 
 ALTURA_OBJETIVO = 300   # how many pixels tall the critter ends up once upscaled
 FACTOR_MAX = 10

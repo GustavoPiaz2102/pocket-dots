@@ -27,3 +27,12 @@
 # your own file wins over anything set above.
 [include]
 	path = ~/.gitconfig.local
+[user]
+	email = gustavopiazdasilva2102@gmail.com
+	name = GustavoPiaz2102
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential

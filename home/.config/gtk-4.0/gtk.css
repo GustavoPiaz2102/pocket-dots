@@ -1,7 +1,7 @@
 /* adw-gtk3 base + pywal accent */
 @import url("file:///usr/share/themes/adw-gtk3-dark/gtk-4.0/gtk.css");
-@import url("file:///home/diego/.cache/wal/colors-gtk.css");
+@import url("file:///home/gustavo/.cache/wal/colors-gtk.css");
 /* GTK4 only: the accent through :root, which in libadwaita >= 1.6 is the only
    thing that overrides the system's blue accent. GTK3 does not import this
    file. */
-@import url("file:///home/diego/.cache/wal/colors-gtk4-accent.css");
+@import url("file:///home/gustavo/.cache/wal/colors-gtk4-accent.css");

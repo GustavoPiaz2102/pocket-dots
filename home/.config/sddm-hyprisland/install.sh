@@ -8,7 +8,7 @@
 # To undo: see uninstall.sh (it leaves SDDM as it was, with `silent`).
 set -euo pipefail
 
-SRC=/home/diego/.config/sddm-hyprisland
+SRC=/home/gustavo/.config/sddm-hyprisland
 THEME=/usr/share/sddm/themes/hyprisland
 SHARED=/var/lib/sddm-hyprisland
 STAMP="$(date +%Y%m%d-%H%M%S)"

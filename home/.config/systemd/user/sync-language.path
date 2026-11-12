@@ -11,7 +11,7 @@
 # changes (Settings, a script, or editing the JSON by hand).
 [Unit]
 Description=Watches the rice language to keep hyprlock and the scripts up to date
-Documentation=file:///home/diego/.config/hypr/scripts/sync-language.sh
+Documentation=file:///home/gustavo/.config/hypr/scripts/sync-language.sh
 
 [Path]
 # Both conditions on purpose: PathChanged covers the normal write (it fires

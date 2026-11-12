@@ -213,7 +213,7 @@ fi
 # The outline map of a wallpaper nobody has seen yet (a new download) is made
 # here, in the background and at low priority, for the NEXT time: cutting a
 # character out takes ~10 s, and nobody waits for that. Cached ones cost nothing.
-[ -x "$HOME/.local/bin/wallfx" ] && nice -n 15 "$HOME/.local/bin/wallfx" warm >/dev/null 2>&1 9>&- &
+# [ -x "$HOME/.local/bin/wallfx" ] && nice -n 15 "$HOME/.local/bin/wallfx" warm >/dev/null 2>&1 9>&- &
 
 # Reloads of running daemons.
 # Quickshell (bar + notch) does NOT need a reload: Colors.qml watches

@@ -11,7 +11,7 @@
 # is already running, so this unit and the habit of relaunching from the
 # terminal live together without ending up with two bars.
 Description=Quickshell: bar, notch and panels
-Documentation=file:///home/diego/.config/quickshell/README.md
+Documentation=file:///home/gustavo/.config/quickshell/README.md
 PartOf=graphical-session.target
 After=graphical-session.target
 ConditionEnvironment=WAYLAND_DISPLAY

@@ -211,8 +211,8 @@ export PATH="$HOME/.local/bin:$PATH"
 # Avoids duplicates when combining .profile, uv and manual reloads of .zshrc.
 #
 # The :A goes BEFORE the typeset -U on purpose. typeset -U deduplicates by
-# comparing STRINGS, and "/home/diego/.local/bin" and
-# "/home/diego/.local/share/../bin" are different strings pointing to the SAME
+# comparing STRINGS, and "/home/gustavo/.local/bin" and
+# "/home/gustavo/.local/share/../bin" are different strings pointing to the SAME
 # directory, so both survived (the second is added by the `. ~/.local/bin/env`
 # in ~/.profile). Every command the shell had not cached made one extra call
 # while looking for the executable.
@@ -451,3 +451,14 @@ unset _cred
 # be written to without sudo, which is exactly what you do not want for an
 # environment.
 [ -r /opt/miniconda3/etc/profile.d/conda.sh ] && . /opt/miniconda3/etc/profile.d/conda.sh
+# aliases
+alias ls="exa --icons --color auto"
+
+# android studio
+export ANDROID_HOME=/home/gustavo/Android/Sdk
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+path+=("$ANDROID_HOME/platform-tools" "$ANDROID_HOME/cmdline-tools/latest/bin")
+export PATH
+
+# xhost (só se o X estiver disponível, pra não dar erro)
+[[ -n $DISPLAY ]] && xhost +si:localuser:root &>/dev/null

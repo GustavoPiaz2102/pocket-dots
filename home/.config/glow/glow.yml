@@ -1,5 +1,5 @@
 # pywal regenerates this style when the wallpaper changes.
-style: "/home/diego/.cache/wal/colors-glamour.json"
+style: "/home/gustavo/.cache/wal/colors-glamour.json"
 # mouse support (TUI-mode only)
 mouse: false
 # use pager to display markdown
