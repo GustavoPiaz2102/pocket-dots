@@ -295,7 +295,7 @@ Scope {
 
             property real fsProg: ((ShellState.fullscreen && win.primary) || win.autoHidden) ? 1 : 0
             Behavior on fsProg { NumberAnimation { duration: Appearance.mIn; easing.type: Easing.OutCubic } }
-            readonly property bool fsHidden: ShellState.fullscreen && win.primary
+            readonly property bool fsHidden: (ShellState.fullscreen && win.primary) && fsProg >= 0.999
             visible: root.shown
             anchors { top: true; left: true; right: true }
             implicitHeight: win.primary ? root.maxH + 40 : root.barH + 40
@@ -377,7 +377,7 @@ Scope {
                 id: surface
                 width: parent.width
                 height: root.maxH
-                y: -(root.maxH) * win.fsProg
+                y: -((ShellState.open ? root.maxH : (win.faceH + 16)) * win.fsProg)
                 opacity: 1 - win.fsProg
 
                 // Soft veil (off by default)

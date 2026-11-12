@@ -120,8 +120,8 @@ hl.config({
         -- there are 6 px (3 + 3) and up to the edge of the screen, another 6:
         -- THE SAME gap. It used to be 6 and 5. One pixel of mismatch cannot be
         -- seen, but it can be felt.
-        gaps_in  = 3,
-        gaps_out = 6,
+        gaps_in  = 0,
+        gaps_out = 0,
 
         -- Law 2 -- no border, on purpose: focus is marked with light, not
         -- with an outline. If one day you want borders: raise this to 2 and
