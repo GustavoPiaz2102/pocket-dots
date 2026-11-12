@@ -488,6 +488,26 @@ Item {
                     }
                 }
                 Text {
+                    id: powerToggleBtn
+                    property bool menuOpen: false
+                    Connections {
+                        target: ShellState
+                        function onOpenChanged() {
+                            if (!ShellState.open) powerToggleBtn.menuOpen = false;
+                        }
+                    }
+                    text: "󰐥"
+                    color: (powerToggleMa.containsMouse || menuOpen) ? Colors.accentInk : Colors.label3
+                    font.family: Appearance.font; font.pixelSize: 14
+                    Behavior on color { ColorAnimation { duration: Appearance.mQuick; easing.type: Easing.OutQuad } }
+                    MouseArea {
+                        id: powerToggleMa
+                        anchors.fill: parent; anchors.margins: -5
+                        hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                        onClicked: powerToggleBtn.menuOpen = !powerToggleBtn.menuOpen
+                    }
+                }
+                Text {
                     visible: ShellState.notifCount > 0
                     text: I18n.tr("Limpiar")
                     color: clearMa.containsMouse ? Colors.accentInk : Colors.label3
@@ -498,6 +518,80 @@ Item {
                         anchors.fill: parent; anchors.margins: -5
                         hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                         onClicked: ShellState.clearNotifs()
+                    }
+                }
+            }
+
+            Rectangle {
+                id: powerSubmenu
+                Layout.fillWidth: true
+                Layout.preferredHeight: powerToggleBtn.menuOpen ? 36 : 0
+                visible: height > 0
+                opacity: powerToggleBtn.menuOpen ? 1 : 0
+                clip: true
+                radius: 10
+                color: Colors.surface1
+                border.width: 1
+                border.color: Colors.hairline
+
+                Behavior on Layout.preferredHeight { NumberAnimation { duration: Appearance.mQuick; easing.type: Easing.OutCubic } }
+                Behavior on opacity { NumberAnimation { duration: Appearance.mQuick; easing.type: Easing.OutQuad } }
+
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 4
+                    spacing: 4
+
+                    Repeater {
+                        model: [
+                            { icon: "󰌾", label: "Lock",      cmd: "loginctl lock-session" },
+                            { icon: "󰤄", label: "Sleep",     cmd: "systemctl suspend" },
+                            { icon: "󰜉", label: "Reiniciar", cmd: "systemctl reboot" },
+                            { icon: "󰐥", label: "Desligar",  cmd: "systemctl poweroff" }
+                        ]
+                        delegate: Rectangle {
+                            required property var modelData
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            radius: 7
+                            color: actMa.containsMouse
+                                ? Qt.rgba(Colors.accent.r, Colors.accent.g, Colors.accent.b, 0.22)
+                                : "transparent"
+                            Behavior on color { ColorAnimation { duration: Appearance.mQuick; easing.type: Easing.OutQuad } }
+
+                            RowLayout {
+                                anchors.centerIn: parent
+                                spacing: 5
+
+                                Text {
+                                    text: modelData.icon
+                                    font.family: Appearance.font
+                                    font.pixelSize: 13
+                                    color: actMa.containsMouse ? Colors.accentInk : Colors.label2
+                                    Behavior on color { ColorAnimation { duration: Appearance.mQuick; easing.type: Easing.OutQuad } }
+                                }
+                                Text {
+                                    text: modelData.label
+                                    font.family: Appearance.fontUI
+                                    font.pixelSize: Appearance.fsXXS
+                                    font.weight: Font.Medium
+                                    color: actMa.containsMouse ? Colors.accentInk : Colors.label2
+                                    Behavior on color { ColorAnimation { duration: Appearance.mQuick; easing.type: Easing.OutQuad } }
+                                }
+                            }
+
+                            MouseArea {
+                                id: actMa
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    powerToggleBtn.menuOpen = false;
+                                    ShellState.closePanel();
+                                    Quickshell.execDetached(["sh", "-c", modelData.cmd]);
+                                }
+                            }
+                        }
                     }
                 }
             }
